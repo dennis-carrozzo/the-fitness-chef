@@ -1,5 +1,5 @@
 import { storyblokEditable } from '@storyblok/react'
-import WithImage from './WithImage'
+import Variant1 from './Variant1'
 // import Text from './Text'
 // import Variant3 from './Variant3'
 
@@ -13,8 +13,8 @@ export default function Hero ({ blok }) {
     //   return <Variant3 {...storyblokEditable(blok)} blok={blok} />
     // case 'text':
     //   return <Text {...storyblokEditable(blok)} blok={blok} />
-    case 'withImage':
+    case 'variant1':
     default:
-      return <WithImage {...storyblokEditable(blok)} blok={blok} />
+      return <Variant1 {...storyblokEditable(blok)} blok={blok} />
   }
 }
