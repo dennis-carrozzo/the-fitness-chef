@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { storyblokEditable, StoryblokComponent } from '@storyblok/react'
+import Image from 'next/image'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -15,12 +16,12 @@ import Typography from '@mui/material/Typography'
 import MenuIcon from '@mui/icons-material/Menu'
 import CloseIcon from '@mui/icons-material/Close'
 import NextMuiLink from '@/components/NextMuiLink'
+import SocialLinkButton from '@/components/SocialLinkButton'
 
-/* The code is defining a React functional component called "Config". This component is responsible for
+/* The code is defining a React functional component called "Header". This component is responsible for
 rendering a navigation bar with a drawer menu. */
-export default function Config ({ blok }) {
+export default function Header ({ blok }) {
   const [mobileOpen, setMobileOpen] = useState(false)
-
   const handleDrawerToggle = () => {
     setMobileOpen(prevState => !prevState)
   }
@@ -42,7 +43,7 @@ export default function Config ({ blok }) {
       >
         <CloseIcon sx={{ position: 'absolute', right: 20 }} />
         <Stack component={NextMuiLink} href='/' sx={{ textDecoration: 'none' }}>
-          <Typography variant='h4' component='h1' sx={{ color: 'light.main' }}>
+          <Typography variant='h5' component='h1' sx={{ color: 'light.main' }}>
             The Fitness Chef
           </Typography>
         </Stack>
@@ -64,7 +65,48 @@ export default function Config ({ blok }) {
             />
           </ListItem>
         ))}
+        {/* Primary CTA */}
+        {!!blok?.deliverooLink?.cached_url && (
+          <ListItem sx={{ textAlign: 'center' }}>
+            <ListItemText
+              primary={
+                <NextMuiLink
+                  href={blok?.deliverooLink?.cached_url}
+                  target='_blank'
+                >
+                  <Button variant='contained' sx={{ position: 'relative' }}>
+                    Order Now
+                    <Image
+                      src='/deliveroo.svg'
+                      alt='deliveroo icon'
+                      width='20'
+                      height='20'
+                      style={{ marginLeft: 4 }}
+                    />
+                  </Button>
+                </NextMuiLink>
+              }
+            />
+          </ListItem>
+        )}
       </List>
+      <Stack
+        direction='row'
+        justifyContent='center'
+        alignItems='center'
+        spacing={0}
+        sx={{ display: 'inline-block' }}
+      >
+        {!!blok.SocialLinks &&
+          !!blok.SocialLinks[0] &&
+          blok.SocialLinks.map(link => (
+            <SocialLinkButton
+              key={link._uid}
+              link={link.link.cached_url}
+              platform={link.platform}
+            />
+          ))}
+      </Stack>
     </Box>
   )
 
@@ -80,13 +122,14 @@ export default function Config ({ blok }) {
     >
       <AppBar
         component='nav'
-        sx={{ backgroundColor: 'dark.main', boxShadow: 'none' }}
+        sx={{ width: 1, backgroundColor: 'dark.main', boxShadow: 'none' }}
       >
         <Toolbar
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
-            paddingInline: { sm: 10 }
+            maxWidth: 'xl',
+            paddingInline: { sm: 2, lg: 10 }
           }}
         >
           <NextMuiLink
@@ -119,20 +162,57 @@ export default function Config ({ blok }) {
             sx={{
               mr: 2,
               ml: 'auto',
-              display: { sm: 'none' },
+              display: { md: 'none' },
               color: 'light.main'
             }}
           >
             <MenuIcon />
           </IconButton>
+          {/* Navigation */}
           <Stack
             spacing={3}
             direction='row'
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+            sx={{ display: { xs: 'none', md: 'block' } }}
           >
+            {/* Website links */}
             {blok?.HeaderMenu?.map(nestedBlok => (
               <StoryblokComponent blok={nestedBlok} key={nestedBlok._uid} />
             ))}
+            {/* Primary CTA */}
+            {!!blok?.deliverooLink?.cached_url && (
+              <NextMuiLink
+                href={blok?.deliverooLink?.cached_url}
+                target='_blank'
+              >
+                <Button variant='contained' sx={{ position: 'relative' }}>
+                  Order Now
+                  <Image
+                    src='/deliveroo.svg'
+                    alt='deliveroo icon'
+                    width='20'
+                    height='20'
+                    style={{ marginLeft: 4 }}
+                  />
+                </Button>
+              </NextMuiLink>
+            )}
+            <Stack
+              direction='row'
+              justifyContent='center'
+              alignItems='center'
+              spacing={0}
+              sx={{ display: 'inline-block' }}
+            >
+              {!!blok.SocialLinks &&
+                !!blok.SocialLinks[0] &&
+                blok.SocialLinks.map(link => (
+                  <SocialLinkButton
+                    key={link._uid}
+                    link={link.link.cached_url}
+                    platform={link.platform}
+                  />
+                ))}
+            </Stack>
           </Stack>
         </Toolbar>
       </AppBar>

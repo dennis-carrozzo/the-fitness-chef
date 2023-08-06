@@ -11,12 +11,7 @@ import {
  */
 export default function Page ({ story }) {
   story = useStoryblokState(story, {
-    resolve_relations: [
-      // 'Article.featuredArticles',
-      // 'Poem.featuredPoems',
-      // 'FeaturedArticles.articles',
-      // 'FeaturedArticles.mainArticle'
-    ]
+    resolve_relations: ['FeaturedServices.services']
   })
   return (
     <div>
@@ -24,7 +19,7 @@ export default function Page ({ story }) {
         <title>{story ? story.name : 'The Fitness Chef'}</title>
         <link rel='icon' href='/favicon.ico' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
-        {!!story.content.seo && !!story.content.seo[0] && (
+        {!!story?.content?.seo && !!story.content.seo[0] && (
           <>
             <meta
               name='description'
@@ -88,16 +83,18 @@ export default function Page ({ story }) {
  * page.
  */
 export async function getStaticProps ({ params, ...context }) {
-  const slug = params.slug ? params.slug.join('/') : 'home'
+  let slug = params.slug ? params.slug.join('/') : 'home'
+  if (slug === 'config') {
+    slug = 'home'
+  }
+  if (slug.match(/services\//)) {
+    slug = 'services'
+  }
+
   const sbParams = {
     version: process.env.NODE_ENV === 'production' ? 'published' : 'draft',
     resolve_links: 'url',
-    resolve_relations: [
-      // 'Article.featuredArticles',
-      // 'Poem.featuredPoems',
-      // 'FeaturedArticles.articles',
-      // 'FeaturedArticles.mainArticle'
-    ]
+    resolve_relations: ['FeaturedServices.services']
   }
 
   const storyblokApi = getStoryblokApi()
@@ -132,11 +129,7 @@ export async function getStaticPaths () {
   })
   const paths = []
   Object.keys(data.links).forEach(linkKey => {
-    if (
-      data.links[linkKey].is_folder ||
-      data.links[linkKey].slug === 'home' ||
-      data.links[linkKey].slug === 'config'
-    ) {
+    if (data.links[linkKey].is_folder || data.links[linkKey].slug === 'home') {
       return
     }
     const slug = data.links[linkKey].slug
@@ -147,6 +140,6 @@ export async function getStaticPaths () {
 
   return {
     paths,
-    fallback: false
+    fallback: true
   }
 }
