@@ -11,10 +11,7 @@ import {
  */
 export default function Home ({ story }) {
   story = useStoryblokState(story, {
-    resolve_relations: [
-      'FeaturedArticles.articles',
-      'FeaturedArticles.mainArticle'
-    ]
+    resolve_relations: ['FeaturedServices.services']
   })
   return (
     <div>
@@ -91,10 +88,7 @@ export async function getStaticProps ({ params, ...context }) {
   const sbParams = {
     version: process.env.NODE_ENV === 'production' ? 'published' : 'draft',
     resolve_links: 'url',
-    resolve_relations: [
-      'FeaturedArticles.articles',
-      'FeaturedArticles.mainArticle'
-    ]
+    resolve_relations: ['FeaturedServices.services']
   }
 
   const storyblokApi = getStoryblokApi()
